@@ -1,4 +1,4 @@
-(defproject juxt/crux-decorators "0.1.0-SNAPSHOT"
+(defproject juxt/crux-decorators "0.1.0"
   :description "Crux Decorators"
   :url "https://github.com/crux-labs/crux-decorators"
   :license {:name "The MIT License"
