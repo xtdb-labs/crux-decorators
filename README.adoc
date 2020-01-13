@@ -2,6 +2,7 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/juxt/crux-decorators.svg)](https://clojars.org/juxt/crux-decorators)
 
+
 == Overview
 
 Decorators are features that can be built on top of Crux that can be used
@@ -45,4 +46,4 @@ This project also includes an aggregation decorator. For usage examples, see
                           [?e :post/cost ?post-cost]]})))))
 ----
 
-See the https://github.com/juxt/crux/blob/master/crux-decorators/test/crux/decorators/aggregation_test.clj[aggregation_test.clj] for more examples of usage.
+See the https://github.com/crux-labs/crux-decorators/blob/master/test/crux/aggregation_test.clj[aggregation_test.clj] for more examples of usage.
