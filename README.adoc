@@ -1,11 +1,48 @@
 = Decorators
 
+[![Clojars Project](https://img.shields.io/clojars/v/juxt/crux-decorators.svg)](https://clojars.org/juxt/crux-decorators)
+
 == Overview
 
-This project contains a small set of utilities for extending the core APIs with
-new functionality using a "decorator" pattern.
+Decorators are features that can be built on top of Crux that can be used
+optionally and can be created easily without needing understand how the core of
+Crux works. Use of decorators is currently an advanced topic and requires a
+basic understanding of Clojure to configure.
 
 == Aggregation
 
+The
+https://github.com/crux-labs/crux-decorators/blob/master/src/crux/decorators/aggregation/alpha.clj[`aggregation.alpha`]
+namespace demonstrates a good example of building a highly general
+aggregation extension to the basic Crux query. The standard `api/q`
+function can now be ignored as the `aggr/q` function is used instead
+(it wraps `api/q` with transducer magic).
+
 This project also includes an aggregation decorator. For usage examples, see
 `aggregation_test.clj` and `graph-traversal.clj`.
+
+[source,clj]
+----
+  ;; tag::aggr1[]
+  (t/deftest test-count-aggregation
+    (f/transact-entity-maps!
+     *kv*
+     [{:crux.db/id :a1 :user/name "patrik" :user/post 1 :post/cost 30}
+      {:crux.db/id :a2 :user/name "patrik" :user/post 2 :post/cost 35}
+      {:crux.db/id :a3 :user/name "patrik" :user/post 3 :post/cost 5}
+      {:crux.db/id :a4 :user/name "niclas" :user/post 1 :post/cost 8}])
+
+    (t/testing "with vector syntax"
+      (t/is (= [{:user-name "niclas" :post-count 1 :cost-sum 8}
+                {:user-name "patrik" :post-count 3 :cost-sum 70}]
+               (aggr/q
+                (api/db *api*)
+                '{:aggr {:partition-by [?user-name]
+                         :select
+                         {?cost-sum [0 (+ acc ?post-cost)]
+                          ?post-count [0 (inc acc) ?e]}}
+                  :where [[?e :user/name ?user-name]
+                          [?e :post/cost ?post-cost]]})))))
+----
+
+See the https://github.com/juxt/crux/blob/master/crux-decorators/test/crux/decorators/aggregation_test.clj[aggregation_test.clj] for more examples of usage.
